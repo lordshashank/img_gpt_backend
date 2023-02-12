@@ -9,8 +9,7 @@ const router = express.Router();
 router.post("/answer", async (req, res, next) => {
   const { prompt } = req.body;
   console.log(prompt);
-  res.send("dine");
-  return 0;
+
   const response = await axios.post(
     "https://api.openai.com/v1/completions",
     {
@@ -31,8 +30,8 @@ router.post("/answer", async (req, res, next) => {
   );
 
   const generatedText = response.data.choices[0].text;
-  console.log("ye hai");
-  console.log(generatedText);
+  //   console.log("ye hai");
+  //   console.log(generatedText);
   res.send({ generatedText });
 });
 
