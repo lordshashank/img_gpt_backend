@@ -2,36 +2,36 @@ const express = require("express");
 const axios = require("axios");
 const app = express();
 require("dotenv").config();
-const CHATGPT_API_KEY = process.env.CHATGPT_API_KEY;
+// const CHATGPT_API_KEY = process.env.CHATGPT_API_KEY;
+const PALM_API_KEY = process.env.PALM_API_KEY;
 // app.use(express.json());
 const router = express.Router();
 
 router.post("/answer", async (req, res, next) => {
-  const { prompt } = req.body;
-  console.log(prompt);
+  const prompt = req.body.text;
+
+  const requestBody = {
+    prompt: {
+      text: prompt,
+    },
+    temperature: 1.0,
+    candidate_count: 1,
+    maxOutputTokens: 1000,
+  };
 
   const response = await axios.post(
-    "https://api.openai.com/v1/completions",
-    {
-      prompt: req.body.text,
-      max_tokens: 1000,
-      n: 1,
-      stop: null,
-      temperature: 0.5,
-      // max_tokens: 7,
-      model: "text-davinci-003",
-    },
+    "https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText?key=" +
+      PALM_API_KEY,
+    requestBody,
     {
       headers: {
-        Authorization: `Bearer ${CHATGPT_API_KEY}`,
         "Content-Type": "application/json",
       },
     }
   );
+  // console.log("ye hai");
+  const generatedText = response.data.candidates[0].output;
 
-  const generatedText = response.data.choices[0].text;
-  //   console.log("ye hai");
-  //   console.log(generatedText);
   res.send({ generatedText });
 });
 
